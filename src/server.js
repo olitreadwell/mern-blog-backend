@@ -1,17 +1,34 @@
-import express from 'express';
+import express from "express";
 
+let articlesInfo = [
+  {
+    name: "learn-react",
+    upvotes: 0,
+  },
+  {
+    name: "learn-node",
+    upvotes: 0,
+  },
+  {
+    name: "mongodb",
+    upvotes: 0,
+  },
+];
 
 const app = express();
 app.use(express.json());
 
-app.post('/hello', (req, res) => { 
-    res.send(`POST Hello! ${req.body.name}`); 
-});
-
-app.get('/hello/:name', (req, res) => {
+app.put("/api/v1/articles/:name/upvote", (req, res) => {
     const { name } = req.params;
-    res.send(`GET Hello! ${name}`);
+    const article = articlesInfo.find((article) => article.name === name);
+    if (article) {
+        article.upvotes += 1;
+        res.status(200).send(`${name} now has ${article.upvotes} upvotes`);
+    } else {
+        res.status(404).send("Article not found");
+    }   
 });
 
-app.listen(8888, () => console.log('Server is listening on port http://localhost:8888...'));
-
+app.listen(8888, () =>
+  console.log("Server is listening on port http://localhost:8888...")
+);
