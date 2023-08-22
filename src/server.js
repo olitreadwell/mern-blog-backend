@@ -1,7 +1,21 @@
 import express from "express";
+import { MongoClient } from "mongodb";
 
 const app = express();
 app.use(express.json());
+
+// get specific article info endpoint
+app.get("/api/v1/articles/:name", async (req, res) => {
+    const { name } = req.params;
+
+    const client = await MongoClient.connect("mongodb://localhost:27017")   
+
+    const db = client.db("react-blog-db");
+
+    const articleInfo = await db.collection("articles").findOne({ name });
+
+    res.status(200).json(articleInfo);
+});
 
 // upvote article endpoint
 app.put("/api/v1/articles/:name/upvote", (req, res) => {
