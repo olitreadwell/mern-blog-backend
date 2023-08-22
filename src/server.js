@@ -48,15 +48,24 @@ app.put("/api/v1/articles/:name/upvote", async (req, res) => {
 });
 
 // add comment endpoint
-app.post("/api/v1/articles/:name/comments/create", (req, res) => {
+app.post("/api/v1/articles/:name/comments/create", async (req, res) => {
   const { name } = req.params;
   const { postedBy, text } = req.body;
 
-  const article = articlesInfo.find((article) => article.name === name);
+    const client = await MongoClient.connect("mongodb://localhost:27017");
 
-  if (article) {
-    article.comments.push({ postedBy, text });
-    res.status(200).send(article.comments);
+    const db = client.db("react-blog-db");
+
+    await db
+        .collection("articles")
+        .updateOne({ name }, { $push: { comments: { postedBy, text } } });
+
+    const updatedArticleInfo = await db
+        .collection("articles")
+        .findOne({ name });
+
+    if (updatedArticleInfo) {
+        res.status(200).send(updatedArticleInfo.comments);
   } else {
     res.status(404).send("Article not found");
   }
