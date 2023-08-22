@@ -14,7 +14,11 @@ app.get("/api/v1/articles/:name", async (req, res) => {
 
     const articleInfo = await db.collection("articles").findOne({ name });
 
-    res.status(200).json(articleInfo);
+    if (articleInfo) {
+        res.status(200).json(articleInfo);
+    } else {
+        res.status(404).send("Article not found");
+    }
 });
 
 // upvote article endpoint
