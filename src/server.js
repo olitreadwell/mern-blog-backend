@@ -29,13 +29,19 @@ app.put("/api/v1/articles/:name/upvote", async (req, res) => {
 
   const db = client.db("react-blog-db");
 
-  await db.collection("articles").updateOne({ name }, { $inc: { upvotes: 1 } });
+    await db
+        .collection("articles")
+        .updateOne({ name }, { $inc: { upvotes: 1 } });
 
-  const updatedArticleInfo = await db.collection("articles").findOne({ name });
+    const updatedArticleInfo = await db
+        .collection("articles")
+        .findOne({ name });
 
   if (updatedArticleInfo) {
     // article.upvotes += 1;
-    res.status(200).send(`${name} has ${updatedArticleInfo.upvotes} upvotes`);
+        res.status(200).send(
+            `${name} has ${updatedArticleInfo.upvotes} upvotes`
+        );
   } else {
     res.status(404).send("Article not found");
   }
