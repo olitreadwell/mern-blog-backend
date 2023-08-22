@@ -35,7 +35,7 @@ app.put("/api/v1/articles/:name/upvote", async (req, res) => {
     if (updatedArticleInfo) {
         // article.upvotes += 1;
         res.status(200).send(
-            `${name} has ${updatedArticleInfo.upvotes} upvotes`
+            updatedArticleInfo
         );
     } else {
         res.status(404).send("Article not found");
