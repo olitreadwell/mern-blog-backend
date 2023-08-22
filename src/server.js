@@ -3,21 +3,25 @@ import express from "express";
 let articlesInfo = [
   {
     name: "learn-react",
-    upvotes: 0,
+        upvotes: 0,
+        comments: [],
   },
   {
     name: "learn-node",
     upvotes: 0,
+        comments: [],
   },
   {
     name: "mongodb",
     upvotes: 0,
+        comments: [],
   },
 ];
 
 const app = express();
 app.use(express.json());
 
+// upvote article endpoint
 app.put("/api/v1/articles/:name/upvote", (req, res) => {
     const { name } = req.params;
     const article = articlesInfo.find((article) => article.name === name);
@@ -27,6 +31,21 @@ app.put("/api/v1/articles/:name/upvote", (req, res) => {
     } else {
         res.status(404).send("Article not found");
     }   
+});
+
+// add comment endpoint
+app.post("/api/v1/articles/:name/comments/create", (req, res) => {
+    const { name } = req.params;
+    const { postedBy, text } = req.body;
+
+    const article = articlesInfo.find((article) => article.name === name);
+
+    if (article) {
+        article.comments.push({ postedBy, text });
+        res.status(200).send(article.comments);
+    } else {
+        res.status(404).send("Article not found");
+    }
 });
 
 app.listen(8888, () =>
